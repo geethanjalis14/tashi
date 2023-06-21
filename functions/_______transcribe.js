@@ -1,6 +1,8 @@
-exports.handler = function(context, event, callback) {
+exports.handler = async function(context, event, callback) {
     // Create a TwiML Voice Response object to build the response
     const twiml = new Twilio.twiml.VoiceResponse();
+    const axios = require('axios');
+    const apiUrl = 'http://15.206.28.116:8000';
     const greetingSentences = [
         "Hi there, I am Riya, your personal virtual mental health companion. How are you feeling today?",
         "Hello, I'm Riya, your dedicated virtual mental health companion. How are you doing today?",
@@ -23,6 +25,7 @@ exports.handler = function(context, event, callback) {
         "Hey! I'm Riya, your friendly virtual mental health companion. How are you feeling today?",
         "Good day! I'm Riya, your caring virtual mental health companion. How are you doing?"
     ];
+
     // If no previous conversation is present, or if the conversation is empty, start the conversation
     if (!event.request.cookies.convo) {
         // Greet the user with a message using AWS Polly Neural voice
@@ -32,6 +35,8 @@ exports.handler = function(context, event, callback) {
             greetingSentences[Math.floor(Math.random() * greetingSentences.length)]
         );
     }
+        // Send a POST request
+    await axios(apiUrl + '/log/tashi-completed-first-time-now-listening-to-user');
 
     // Listen to the user's speech and pass the input to the /respond Function
     twiml.gather({
@@ -40,7 +45,7 @@ exports.handler = function(context, event, callback) {
         input: 'speech', // Specify speech as the input type
         action: '/respond', // Send the collected input to /respond 
     });
-
+    
     // Create a Twilio Response object
     const response = new Twilio.Response();
 
