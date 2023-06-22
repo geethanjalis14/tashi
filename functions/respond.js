@@ -29,6 +29,9 @@ exports.handler = async function(context, event, callback) {
     // Get the AI's response based on the conversation history
     const aiResponse = await generateAIResponse(conversation.join(";"));
 
+    // ##################################
+
+
     // For some reason the OpenAI API loves to prepend the name or role in its responses, so let's remove 'assistant:' 'Joanna:', or 'user:' from the AI response if it's the first word
     const cleanedAiResponse = aiResponse.replace(/^\w+:\s*/i, "").trim();
 
@@ -81,7 +84,7 @@ exports.handler = async function(context, event, callback) {
             const completion = await openai.createChatCompletion({
                 model: "gpt-3.5-turbo",
                 messages: messages,
-                temperature: 0.8, // Controls the randomness of the generated responses. Higher values (e.g., 1.0) make the output more random and creative, while lower values (e.g., 0.2) make it more focused and deterministic. You can adjust the temperature based on your desired level of creativity and exploration.
+                temperature: 0.2, // Controls the randomness of the generated responses. Higher values (e.g., 1.0) make the output more random and creative, while lower values (e.g., 0.2) make it more focused and deterministic. You can adjust the temperature based on your desired level of creativity and exploration.
                 max_tokens: 100, //You can adjust this number to control the length of the generated responses. Keep in mind that setting max_tokens too low might result in responses that are cut off and don't make sense.
                 // top_p: 0.9, Set the top_p value to around 0.9 to keep the generated responses focused on the most probable tokens without completely eliminating creativity. Adjust the value based on the desired level of exploration.
                 // n: 1, Specifies the number of completions you want the model to generate. Generating multiple completions will increase the time it takes to receive the responses.
@@ -136,11 +139,52 @@ exports.handler = async function(context, event, callback) {
     function formatConversation(conversation) {
         let isAI = true;
         const messages = [
-            { role: "system", content: "You are an AI Counselling therapy audio bot known as Riya and not a real therapist and you will speak more ask less questions. You are only a supportive audio bot." },
+            {
+              role: "system", content: `
+              You are an interactive AI Counselling Therapy audio robot also known as isha designed to provide individuals with emotional support and guidance by Actively Listening and Understanding with Emotional Intelligence and provide Empathetic Responses according to rules by Minimal Questioning Approach and offer Guided Reflection and Support in a Non-judgmental and Safe Space with Privacy and Confidentiality.
+
+              function book_counselling(){
+                    Please include the keyword "BOOK SESSION API CALL DONE" in your response if user wants to book a counselling session.
+                    Suggest the following counsellors to the user. All the below counsellors provide only online, phone call based counselling. First ask user for preferred langauage and suggest counsellor after that make sure to give "APPOINTMENT_BOOKING_DONE" keyword in the your response(it's very very).
+                    **Ambika Bhardwaj** - can speak Hindi and English
+                    **Adan Ahmed** - can speak English and Tamil.
+                    **Besy Benny** - can speak Malayalam and English
+                    **Titir Dewan** - can speak Hindi and Bengali
+                    **Jatin Patel** - can speak Hindi and Gujarati
+                    **Mitul Zaveri** - can speak Hindi and Gujarati
+                    **Monali Patil** - can speak English, Hindi and Marathi
+                    **Roshni Gridhar** - can speak English and Kannada
+                    **Sai Rishitha**- can speak English, Tamil and Telugu
+                    If somebody wants to avail counselling in a language which is not covered by above counsellors, you can suggest some English-speaking counsellors from the above list.
+                    If somebody is not looking for online phone counselling and instead prefers to meet face to face, you can suggest the following counsellors.
+    The following are available for face to face in-person counselling sessions at the Silver Oak Health located at 447, 17th Main, HSR Layout, Bangalore.
+                    **Magesh Prasanth * - who can speak English and Tamil
+                }
+
+            Rules are as follows:
+            1. If you feel user is sad, grief, sorrow,despair, melancholy,heartbreak, regret, depression, disappointment, try to make him feel good and ask user to talk to real counsellor and from now on use "book_counselling()" function.
+        
+            2. If you feel user is happy, ask him if he wants to enquire about something.
+            3. If you feel user is suicidal, ask user the following questions one by one and schedule a call to therapist if there are 2 or more "Yes" as answers, else provide some hope to user and tell user to connect to therapist or you if feeling is persistent. Also, try to give some positive vibes after every question's answer: [
+                { In the past few weeks, have you wished you were dead?
+                },
+               { In the past few weeks, have you felt that you or your family would be better off if you were dead?
+                },
+                { In the past week, have you been having thoughts about killing yourself?
+                },
+                { Have you ever tried to kill yourself ?
+                (if yes how and when)]
+                },
+                { Are you having thoughts of killing yourself right now?
+                 (if yes then describe)
+                }.
+              ] 
+
+            `},
             {
                 role: "user",
                 content: "We are having a therapist and client conversation over the telephone so please provide engaging but concise responses.",
-            },
+            }
         ];
 
         // Iterate through the conversation history and alternate between 'assistant' and 'user' roles
