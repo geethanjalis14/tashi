@@ -50,7 +50,7 @@ exports.handler = async function(context, event, callback) {
         client.messages
             .create({
                 body: `counselling session booked on ${new Date()} for mobile number : ${mobileNumber}`,
-                from: '+19382019993',
+                from: '+15416518806',
                 //  statusCallback: 'http://postb.in/1234abcd',
                 to: '+918861986348'
             })
