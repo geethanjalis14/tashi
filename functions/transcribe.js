@@ -1,6 +1,11 @@
+const axios = require("axios");
+
 exports.handler = function(context, event, callback) {
     // Create a TwiML Voice Response object to build the response
     const twiml = new Twilio.twiml.VoiceResponse();
+    const apiUrl = "http://13.235.83.225:8000";
+    const mobileNumber = event.From;
+
     const greetingSentences = [
         "Hi there, I am isha, your personal virtual mental health companion. How are you feeling today?",
         "Hello, I'm isha, your dedicated virtual mental health companion. How are you doing today?",
@@ -32,6 +37,8 @@ exports.handler = function(context, event, callback) {
             greetingSentences[Math.floor(Math.random() * greetingSentences.length)]
         );
     }
+
+    // axios({method: 'get', url: apiUrl + `/log/api-call-from-isha-transcribe-from-${mobileNumber}`});
 
     // Listen to the user's speech and pass the input to the /respond Function
     twiml.gather({
